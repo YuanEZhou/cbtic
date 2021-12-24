@@ -283,7 +283,10 @@ class DataLoader(data.Dataset):
         else:
             att_feat = np.zeros((1,1,1), dtype='float32')
         if self.use_fc:
-            fc_feat = self.fc_loader.get(str(self.info['images'][ix]['id']))
+            if 'VinVL' in self.opt.input_fc_dir:
+                fc_feat = np.mean(att_feat, axis=0)
+            else:
+                fc_feat = self.fc_loader.get(str(self.info['images'][ix]['id']))
         else:
             fc_feat = np.zeros((1), dtype='float32')
         return (fc_feat,

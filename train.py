@@ -9,7 +9,7 @@ import torch.optim as optim
 import numpy as np
 
 import time
-import os
+import os, pdb
 from six.moves import cPickle
 import traceback
 
@@ -23,11 +23,7 @@ from misc.rewards import init_scorer, get_self_critical_reward
 from misc.loss_wrapper import LossWrapper
 
 import random
-torch.manual_seed(0)
-torch.cuda.manual_seed(0)
-torch.cuda.manual_seed_all(0)
-np.random.seed(0)
-random.seed(0)
+
 
 try:
     import tensorboardX as tb
@@ -277,4 +273,11 @@ def train(opt):
 
 
 opt = opts.parse_opt()
+
+torch.manual_seed(opt.seed)
+torch.cuda.manual_seed(opt.seed)
+torch.cuda.manual_seed_all(opt.seed)
+np.random.seed(opt.seed)
+random.seed(opt.seed)
+
 train(opt)

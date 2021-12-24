@@ -5,11 +5,11 @@ def parse_opt():
     # Data input settings
     parser.add_argument('--input_json', type=str, default='data/cocotalk.json',
                     help='path to the json file containing additional info and vocab')
-    parser.add_argument('--input_fc_dir', type=str, default='data/mscoco_adaptive/cocobu_fc',
+    parser.add_argument('--input_fc_dir', type=str, default='data/mscoco_VinVL/cocobu_fc',
                     help='path to the directory containing the preprocessed fc feats')
-    parser.add_argument('--input_att_dir', type=str, default='data/mscoco_adaptive/cocobu_att',
+    parser.add_argument('--input_att_dir', type=str, default='data/mscoco_VinVL/cocobu_att',
                     help='path to the directory containing the preprocessed att feats')
-    parser.add_argument('--input_box_dir', type=str, default='data/mscoco_adaptive/cocobu_box',
+    parser.add_argument('--input_box_dir', type=str, default='data/mscoco_VinVL/cocobu_box',
                     help='path to the directory containing the boxes of att feats')
     parser.add_argument('--input_label_h5', type=str, default='data/cocotalk_bw_label.h5',
                     help='path to the h5file containing the preprocessed dataset')
@@ -24,15 +24,15 @@ def parse_opt():
                     help='Cached token file for calculating cider score during self critical training.')
 
     # Model settings
-    parser.add_argument('--caption_model', type=str, default="cbt",
-                    help='show_tell, show_attend_tell, all_img, fc, att2in, att2in2, att2all2, adaatt, adaattmo, topdown, stackatt, denseatt, transformer, cbt')
-    parser.add_argument('--rnn_size', type=int, default=512,
+    parser.add_argument('--caption_model', type=str, default="cb_topdown",
+                    help='show_tell, show_attend_tell, all_img, fc, att2in, att2in2, att2all2, adaatt, adaattmo, topdown, stackatt, denseatt, transformer, cbt, cb_topdown')
+    parser.add_argument('--rnn_size', type=int, default=1024,
                     help='size of the rnn in number of hidden nodes in each layer')
     parser.add_argument('--num_layers', type=int, default=1,
                     help='number of layers in the RNN')
     parser.add_argument('--rnn_type', type=str, default='lstm',
                     help='rnn, gru, or lstm')
-    parser.add_argument('--input_encoding_size', type=int, default=512,
+    parser.add_argument('--input_encoding_size', type=int, default=1024,
                     help='the encoding size of each token in the vocabulary, and the image.')
     parser.add_argument('--att_hid_size', type=int, default=512,
                     help='the hidden size of the attention MLP; only useful in show_attend_tell; 0 if not using hidden layer')
@@ -56,9 +56,9 @@ def parse_opt():
                     help='If use box, do we normalize box feature')
 
     # Optimization: General
-    parser.add_argument('--max_epochs', type=int, default=-1,
+    parser.add_argument('--max_epochs', type=int, default=30,
                     help='number of epochs')
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=32,
                     help='minibatch size')
     parser.add_argument('--grad_clip', type=float, default=0.1, #5.,
                     help='clip gradients at this value')
@@ -123,15 +123,15 @@ def parse_opt():
 
 
     # Evaluation/Checkpointing
-    parser.add_argument('--val_images_use', type=int, default=3200,
+    parser.add_argument('--val_images_use', type=int, default=-1,
                     help='how many images to use when periodically evaluating the validation loss? (-1 = all)')
     parser.add_argument('--save_checkpoint_every', type=int, default=2500,
                     help='how often to save a model checkpoint (in iterations)?')
     parser.add_argument('--save_history_ckpt', type=int, default=0,
                     help='If save checkpoints at every save point')
-    parser.add_argument('--checkpoint_path', type=str, default='save',
+    parser.add_argument('--checkpoint_path', type=str, default='save/cb/up-down-cb-relu-0.0-VinVL-feat',
                     help='directory to store checkpointed models')
-    parser.add_argument('--language_eval', type=int, default=0,
+    parser.add_argument('--language_eval', type=int, default=1,
                     help='Evaluate language as well (1 = yes, 0 = no)? BLEU/CIDEr/METEOR/ROUGE_L? requires coco-caption code from Github.')
     parser.add_argument('--losses_log_every', type=int, default=25,
                     help='How often do we snapshot losses, for inclusion in the progress dump? (0 = disable)')       
@@ -139,7 +139,7 @@ def parse_opt():
                     help='Do we load previous best score when resuming training.')       
 
     # misc
-    parser.add_argument('--id', type=str, default='',
+    parser.add_argument('--id', type=str, default='up-down-cb-relu-0.0-VinVL-feat',
                     help='an id identifying this run/job. used in cross-val and appended when writing progress files')
     parser.add_argument('--train_only', type=int, default=0,
                     help='if true then use 80k, else use 110k')
@@ -155,16 +155,20 @@ def parse_opt():
     parser.add_argument('--nsc', type=bool, default= True,
                     help='Whether using the new self critical.')
     parser.add_argument('--cbt', type=bool, default= True,
-                    help='Whether using compact bidirectional transformer.')
+                    help='Whether using compact bidirectional architecture.')
+    parser.add_argument('--cb_weight', type=float, default= 0.2,
+                    help='The weight.')
     parser.add_argument('--r2l', type=bool, default= False,
                     help='Whether generating from right to left.')
     parser.add_argument('--only_l2r_self_critical', type=bool, default= False,
                     help='.')
+    parser.add_argument('--seed', type=int, default= 3,
+                    help='Random seed.')
 
     args = parser.parse_args()
 
     # Check if args are valid
-    assert ((args.caption_model == 'cbt' and args.cbt == True) or (args.caption_model != 'cbt' and args.cbt == False)), "caption_model should be consistent with cbt"
+    assert ((('cb' in args.caption_model) and args.cbt == True) or ( ('cb' not in args.caption_model) and args.cbt == False)), "caption_model should be consistent with cbt"
     assert args.rnn_size > 0, "rnn_size should be greater than 0"
     assert args.num_layers > 0, "num_layers should be greater than 0"
     assert args.input_encoding_size > 0, "input_encoding_size should be greater than 0"

@@ -15,6 +15,8 @@ from .OldModel import ShowAttendTellModel, AllImgModel
 from .AttModel import *
 from .TransformerModel import TransformerModel
 from .CBT import CBT
+from .CB_AttModel import *
+
 
 def setup(opt):
     if opt.caption_model == 'fc':
@@ -54,6 +56,8 @@ def setup(opt):
     # CB-Transformer
     elif opt.caption_model == 'cbt':
         model = CBT(opt)
+    elif opt.caption_model == 'cb_topdown':
+        model = CB_TopDownModel(opt)
     else:
         raise Exception("Caption model not supported: {}".format(opt.caption_model))
 

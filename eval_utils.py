@@ -63,6 +63,9 @@ def language_eval(dataset, preds, model_id, split):
     
     out['bad_count_rate'] = sum([count_bad(_['caption']) for _ in preds_filt]) / float(len(preds_filt))
     outfile_path = os.path.join('eval_results/', model_id + '_' + split + '.json')
+    if 'CLIPScore' in out:
+        out['CLIPScore'] = out['CLIPScore'].item()
+        out['RefCLIPScore'] = out['RefCLIPScore'].item()
     with open(outfile_path, 'w') as outfile:
         json.dump({'overall': out, 'imgToEval': imgToEval}, outfile)
 
@@ -156,6 +159,12 @@ def eval_split(model, crit, loader, eval_kwargs={}):
             choice = torch.max(seqLogprobs_lp,dim =-1, keepdim=True)[1].cpu()
             index = torch.arange(seqLogprobs_lp.numel()).view(seqLogprobs_lp.size())
             index = index.gather(1,choice).view(-1).tolist()
+            ################################################
+            # l2r
+            # index = np.arange(0,len(sents_tmp),2).tolist()
+            # r2l
+            # index = np.arange(1,len(sents_tmp),2).tolist()
+            ################################################
             for i in index:
                 if i%2 == 0:
                     sents.append(sents_tmp[i])

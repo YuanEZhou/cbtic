@@ -1,0 +1,2 @@
+cd  /zhouyuanen/code/cbtic
+python train.py --id   nsc-up-down-cb-relu-0.2-VinVL-feat-seed3  --caption_model cb_topdown   --start_from  save/cb/nsc-up-down-cb-relu-0.2-VinVL-feat-seed3  --checkpoint_path  save/cb/nsc-up-down-cb-relu-0.2-VinVL-feat-seed3  --learning_rate 5e-5   --self_critical_after 29   --max_epochs   50
