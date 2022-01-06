@@ -129,7 +129,7 @@ def parse_opt():
                     help='how often to save a model checkpoint (in iterations)?')
     parser.add_argument('--save_history_ckpt', type=int, default=0,
                     help='If save checkpoints at every save point')
-    parser.add_argument('--checkpoint_path', type=str, default='save/cb/up-down-cb-relu-0.0-VinVL-feat',
+    parser.add_argument('--checkpoint_path', type=str, default='save/cb/up-down-cb-VinVL-feat',
                     help='directory to store checkpointed models')
     parser.add_argument('--language_eval', type=int, default=1,
                     help='Evaluate language as well (1 = yes, 0 = no)? BLEU/CIDEr/METEOR/ROUGE_L? requires coco-caption code from Github.')
@@ -139,7 +139,7 @@ def parse_opt():
                     help='Do we load previous best score when resuming training.')       
 
     # misc
-    parser.add_argument('--id', type=str, default='up-down-cb-relu-0.0-VinVL-feat',
+    parser.add_argument('--id', type=str, default='up-down-cb-VinVL-feat',
                     help='an id identifying this run/job. used in cross-val and appended when writing progress files')
     parser.add_argument('--train_only', type=int, default=0,
                     help='if true then use 80k, else use 110k')
@@ -156,13 +156,13 @@ def parse_opt():
                     help='Whether using the new self critical.')
     parser.add_argument('--cbt', type=bool, default= True,
                     help='Whether using compact bidirectional architecture.')
-    parser.add_argument('--cb_weight', type=float, default= 0.2,
+    parser.add_argument('--cb_weight', type=float, default= 0,
                     help='The weight.')
     parser.add_argument('--r2l', type=bool, default= False,
                     help='Whether generating from right to left.')
     parser.add_argument('--only_l2r_self_critical', type=bool, default= False,
                     help='.')
-    parser.add_argument('--seed', type=int, default= 3,
+    parser.add_argument('--seed', type=int, default= 0,
                     help='Random seed.')
 
     args = parser.parse_args()
