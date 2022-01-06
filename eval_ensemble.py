@@ -90,8 +90,12 @@ parser.add_argument('--verbose_loss', type=int, default=0,
 
 opt = parser.parse_args()
 
-model_infos = [utils.pickle_load(open('save/cb/%s/infos_%s-best.pkl' %(id, id),'rb')) for id in opt.ids]
-model_paths = ['save/cb/%s/model-best.pth' %(id) for id in opt.ids]
+if  'transformer' in opt.ids:
+  model_infos = [utils.pickle_load(open('save/%s/infos_%s-best.pkl' %(id, id),'rb')) for id in opt.ids]
+  model_paths = ['save/%s/model-best.pth' %(id) for id in opt.ids]
+else:
+  model_infos = [utils.pickle_load(open('save/cb/%s/infos_%s-best.pkl' %(id, id),'rb')) for id in opt.ids]
+  model_paths = ['save/cb/%s/model-best.pth' %(id) for id in opt.ids]
 
 # Load one infos
 infos = model_infos[0]
@@ -120,6 +124,7 @@ vocab = infos['vocab'] # ix -> word mapping
 
 # Setup the model
 from models.CB_AttEnsemble import CB_AttEnsemble
+from models.CBTEnsemble import CBTEnsemble
 
 _models = []
 for i in range(len(model_infos)):
@@ -130,7 +135,10 @@ for i in range(len(model_infos)):
 
 if opt.weights:
     opt.weights = [float(_) for _ in opt.weights]
-model = CB_AttEnsemble(_models, weights=opt.weights)
+if 'transformer' in  opt.ids:
+  model = CBTEnsemble(_models, weights=opt.weights)
+else:
+  model = CB_AttEnsemble(_models, weights=opt.weights)
 model.seq_length = opt.seq_length
 model.cuda()
 model.eval()
