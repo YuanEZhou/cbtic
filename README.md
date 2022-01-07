@@ -12,7 +12,7 @@
 2. Download the preprocessd dataset from this [link](https://entuedu-my.sharepoint.com/:u:/g/personal/n1806230d_e_ntu_edu_sg/ESjYq2E7NlJGuyCaNyCSadEBarCtcRtUMR7Nd0UgTIm3-A?e=Rl0Bu2) and extract it to data/.
 3. Please download the converted [VinVL](https://github.com/pzzhang/VinVL/blob/main/DOWNLOAD.md#pre-exacted-image-features) feature from this [link](https://entuedu-my.sharepoint.com/:u:/g/personal/n1806230d_e_ntu_edu_sg/ETEt4voFu-hAkxxwbwgZEz0BrGiDizFmqMTf3wGdWlv0bQ?e=FcqLhg) and place them under data/mscoco_VinVL/. You can also optionally follow this [instruction](https://github.com/ruotianluo/self-critical.pytorch/blob/master/data/README.md#convert-from-peteanderson80s-original-file) to prepare the fixed or adaptive  bottom-up features extracted by Anderson and place them under data/mscoco/ or data/mscoco_adaptive/.
 4. Download part checkpoints for CBTrans from [here](https://entuedu-my.sharepoint.com/:u:/g/personal/n1806230d_e_ntu_edu_sg/ER1w9q3ekqpKmiVPW_yL2pABY2TSyb_PoyBK0xDqEHH_zg?e=7Hfwdk) and extract them to save/.
-5. Download part checkpoints for CBLSTM from [here]() and extract them to save/cb/.
+5. Download part checkpoints for CBLSTM from [here](https://entuedu-my.sharepoint.com/:u:/g/personal/n1806230d_e_ntu_edu_sg/EVhkGkYbwOxBhY5szkDOxvYBKvobseNee550qmZeaTjpyw?e=WhmiJg) and extract them to save/cb/.
 
 ## Offline Evaluation
 To reproduce the results of single CBLSTM model on Karpathy test split, just run
